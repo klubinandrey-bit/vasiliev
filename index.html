@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VASILIEV — Официальный сайт</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'dark-bg': '#070709',
+                        'dark-card': '#111116',
+                    },
+                    animation: {
+                        'shimmer': 'shimmer 5s ease-in-out infinite',
+                        'hero-shimmer': 'heroShimmer 6s linear infinite',
+                        'breathing-bg': 'breathing 10s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                        heroShimmer: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' },
+                        },
+                        breathing: {
+                            '0%, 100%': { transform: 'scale(1)', opacity: '0.85' },
+                            '50%': { transform: 'scale(1.06)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #070709;
+            color: #E5E7EB;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .brand-shimmer {
+            background: linear-gradient(
+                110deg, 
+                #FFFFFF 0%, 
+                #888899 20%, 
+                #FFFFFF 40%, 
+                #E2E8F0 60%, 
+                #64748B 80%, 
+                #FFFFFF 100%
+            );
+            background-size: 250% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: heroShimmer 6s ease-in-out infinite;
+        }
+
+        .text-shimmer {
+            background: linear-gradient(
+                90deg, 
+                #FFFFFF 0%, 
+                #A1A1AA 25%, 
+                #FFFFFF 50%, 
+                #71717A 75%, 
+                #FFFFFF 100%
+            );
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shimmer 5s ease-in-out infinite;
+        }
+
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070709;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272A;
+            border-radius: 3px;
+        }
+
+        .glass-panel {
+            background: rgba(17, 17, 22, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-button-social {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .glass-button-social:hover {
+            background: #FFFFFF;
+            color: #000000;
+            border-color: #FFFFFF;
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(255, 255, 255, 0.25);
+        }
+
+        .track-card {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .track-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(4px);
+        }
+
+        .track-card.playing {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-white selection:text-black">
+
+    <!-- Canvas Animated Background Particles -->
+    <canvas id="bg-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 opacity-30"></canvas>
+
+    <!-- PERFECTLY ALIGNED HEADER -->
+    <header class="fixed top-0 left-0 w-full z-50 glass-panel border-b-0 py-3.5 px-4 sm:px-8">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <a href="#" class="text-base sm:text-lg font-black tracking-widest text-white uppercase hover:opacity-80 transition-opacity whitespace-nowrap">
+                VASILIEV
+            </a>
+            <nav class="flex items-center space-x-3 sm:space-x-6 text-[11px] sm:text-xs font-semibold tracking-wider whitespace-nowrap">
+                <a href="#about" class="text-zinc-300 hover:text-white transition-colors py-1">Обо мне</a>
+                <a href="#tracks" class="text-zinc-300 hover:text-white transition-colors py-1">Треки</a>
+                <a href="#gallery" class="text-zinc-300 hover:text-white transition-colors py-1">Галерея</a>
+                <a href="#socials" class="text-zinc-300 hover:text-white transition-colors py-1">Контакты</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="relative z-10">
+
+        <!-- 1. HERO SECTION WITH photo1.jpg -->
+        <section id="hero" style="position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 8rem; padding-left: 1rem; padding-right: 1rem; overflow: hidden; background-color: #070709;">
+            
+            <!-- Background Image via IMG tag -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden;">
+                <img src="photo1.jpg" alt="VASILIEV" style="width: 100%; height: 100%; object-fit: cover; object-position: center; position: absolute; top: 0; left: 0; opacity: 0.65;">
+                <!-- Gradient Overlay -->
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(7,7,9,0.8), rgba(7,7,9,0.4), #070709); z-index: 1;"></div>
+            </div>
+
+            <!-- Title & Name at top -->
+            <div class="relative z-20 text-center max-w-5xl mx-auto reveal-item active">
+                <p class="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-zinc-400 mb-3 font-semibold">
+                    Официальный сайт
+                </p>
+                <h1 class="brand-shimmer text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter uppercase mb-4 drop-shadow-2xl">
+                    VASILIEV
+                </h1>
+                
+                <!-- Audio Wave Visualizer Accent -->
+                <div class="flex items-center justify-center space-x-1.5 h-8 my-4">
+                    <span class="w-1 bg-white/80 rounded-full animate-[pulse_1s_infinite_100ms] h-4"></span>
+                    <span class="w-1 bg-white/80 rounded-full animate-[pulse_1s_infinite_300ms] h-7"></span>
+                    <span class="w-1 bg-white/80 rounded-full animate-[pulse_1s_infinite_200ms] h-3"></span>
+                    <span class="w-1 bg-white/80 rounded-full animate-[pulse_1s_infinite_400ms] h-8"></span>
+                    <span class="w-1 bg-white/80 rounded-full animate-[pulse_1s_infinite_150ms] h-5"></span>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <a href="#about" class="absolute bottom-8 left-1/2 -translate-x-1/2 z-25 flex flex-col items-center text-zinc-400 hover:text-white transition-colors duration-300 group">
+                <span class="text-[10px] tracking-widest uppercase mb-1">Прокрутите вниз</span>
+                <i class="fa-solid fa-chevron-down text-xs animate-bounce group-hover:text-white"></i>
+            </a>
+        </section>
+
+        <!-- 2. ABOUT ME SECTION -->
+        <section id="about" class="py-20 px-6 max-w-4xl mx-auto text-center relative z-10">
+            <div class="reveal-item glass-panel p-8 sm:p-14 rounded-3xl relative overflow-hidden shadow-2xl">
+                <h2 class="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-semibold mb-6">
+                    Концепция & Эстетика
+                </h2>
+                <p class="text-2xl sm:text-4xl md:text-5xl font-extralight leading-relaxed sm:leading-tight tracking-tight text-shimmer">
+                    VASILIEV — новый голос в музыке. Сочетание строгой эстетики и искреннего звучания.
+                </p>
+                <div class="w-16 h-[1px] bg-gradient-to-r from-transparent via-zinc-500 to-transparent mx-auto my-8"></div>
+                <p class="text-sm sm:text-base text-zinc-400 font-light max-w-2xl mx-auto leading-relaxed">
+                    Музыка на стыке атмосферного синт-звука, глубинного баса и строгого визуального минимализма.
+                </p>
+            </div>
+        </section>
+
+        <!-- 3. MAIN TRACKS SECTION -->
+        <section id="tracks" class="py-16 px-6 max-w-4xl mx-auto relative z-10">
+            <div class="text-center mb-12 reveal-item">
+                <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-2">Главные треки</h2>
+                <p class="text-zinc-400 text-xs tracking-wider uppercase">Популярные релизы</p>
+            </div>
+
+            <div class="space-y-3.5 reveal-item">
+                <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
+                    <div class="flex items-center space-x-4 min-w-0">
+                        <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
+                            <i class="fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center space-x-2">
+                                <h3 class="text-base sm:text-lg font-bold text-white truncate">зачем?</h3>
+                                <span class="bg-zinc-800 text-[9px] text-zinc-400 font-bold px-1.5 py-0.5 rounded">E</span>
+                            </div>
+                            <p class="text-xs text-zinc-400 truncate">VASILIEV</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-zinc-400 font-mono">1:51</span>
+                </div>
+
+                <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
+                    <div class="flex items-center space-x-4 min-w-0">
+                        <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
+                            <i class="fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center space-x-2">
+                                <h3 class="text-base sm:text-lg font-bold text-white truncate">цум</h3>
+                                <span class="bg-zinc-800 text-[9px] text-zinc-400 font-bold px-1.5 py-0.5 rounded">E</span>
+                            </div>
+                            <p class="text-xs text-zinc-400 truncate">VASILIEV</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-zinc-400 font-mono">1:22</span>
+                </div>
+
+                <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
+                    <div class="flex items-center space-x-4 min-w-0">
+                        <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
+                            <i class="fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <h3 class="text-base sm:text-lg font-bold text-white truncate">я сильный</h3>
+                            <p class="text-xs text-zinc-400 truncate">VASILIEV</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-zinc-400 font-mono">1:50</span>
+                </div>
+
+                <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
+                    <div class="flex items-center space-x-4 min-w-0">
+                        <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
+                            <i class="fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center space-x-2">
+                                <h3 class="text-base sm:text-lg font-bold text-white truncate">sorry baby</h3>
+                                <span class="bg-zinc-800 text-[9px] text-zinc-400 font-bold px-1.5 py-0.5 rounded">E</span>
+                            </div>
+                            <p class="text-xs text-zinc-400 truncate">VASILIEV feat. SEYRVN</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-zinc-400 font-mono">1:50</span>
+                </div>
+
+                <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
+                    <div class="flex items-center space-x-4 min-w-0">
+                        <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
+                            <i class="fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center space-x-2">
+                                <h3 class="text-base sm:text-lg font-bold text-white truncate">болен</h3>
+                                <span class="bg-zinc-800 text-[9px] text-zinc-400 font-bold px-1.5 py-0.5 rounded">E</span>
+                            </div>
+                            <p class="text-xs text-zinc-400 truncate">VASILIEV</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-zinc-400 font-mono">2:28</span>
+                </div>
+
+                <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
+                    <div class="flex items-center space-x-4 min-w-0">
+                        <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
+                            <i class="fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center space-x-2">
+                                <h3 class="text-base sm:text-lg font-bold text-white truncate">демоны</h3>
+                                <span class="bg-zinc-800 text-[9px] text-zinc-400 font-bold px-1.5 py-0.5 rounded">E</span>
+                            </div>
+                            <p class="text-xs text-zinc-400 truncate">VASILIEV</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-zinc-400 font-mono">2:26</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. GALLERY SECTION -->
+        <section id="gallery" class="py-16 px-6 max-w-5xl mx-auto relative z-10">
+            <div class="text-center mb-12 reveal-item">
+                <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-2">Галерея</h2>
+                <p class="text-zinc-400 text-xs tracking-wider uppercase">Визуальная эстетика</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="reveal-item group relative rounded-2xl overflow-hidden glass-panel aspect-[4/3] p-6 flex flex-col justify-end">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-zinc-900 to-black opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                    <div class="relative z-10">
+                        <span class="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">Концепт</span>
+                        <h3 class="text-xl font-bold text-white mt-1">«Роза & Эстетика»</h3>
+                    </div>
+                </div>
+                <div class="reveal-item group relative rounded-2xl overflow-hidden glass-panel aspect-[4/3] p-6 flex flex-col justify-end">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-zinc-900 to-black opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                    <div class="relative z-10">
+                        <span class="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">Обложка</span>
+                        <h3 class="text-xl font-bold text-white mt-1">«Строгий стиль»</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. SOCIAL MEDIA BUTTONS -->
+        <section id="socials" class="py-20 px-6 max-w-2xl mx-auto text-center relative z-10">
+            <div class="reveal-item mb-10">
+                <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">Социальные сети</h2>
+                <p class="text-zinc-400 text-xs">Следите за обновлениями</p>
+            </div>
+            <div class="flex flex-col space-y-4 reveal-item">
+                <a href="#" target="_blank" rel="noopener noreferrer" class="glass-button-social w-full py-4 px-6 rounded-2xl flex items-center justify-between text-base font-semibold tracking-wide text-white group">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-brands fa-telegram text-xl"></i>
+                        <span>Telegram</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-xs opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                </a>
+                <a href="#" target="_blank" rel="noopener noreferrer" class="glass-button-social w-full py-4 px-6 rounded-2xl flex items-center justify-between text-base font-semibold tracking-wide text-white group">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-brands fa-vk text-xl"></i>
+                        <span>VKontakte</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-xs opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                </a>
+                <a href="#" target="_blank" rel="noopener noreferrer" class="glass-button-social w-full py-4 px-6 rounded-2xl flex items-center justify-between text-base font-semibold tracking-wide text-white group">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-brands fa-tiktok text-xl"></i>
+                        <span>TikTok</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-xs opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="relative z-10 border-t border-white/5 py-6 text-center text-xs text-zinc-600">
+        <p>© <span id="year"></span> VASILIEV. Все права защищены.</p>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        function togglePlayTrack(element) {
+            const allTracks = document.querySelectorAll('.track-card');
+            const isPlaying = element.classList.contains('playing');
+            allTracks.forEach(card => card.classList.remove('playing'));
+            if (!isPlaying) {
+                element.classList.add('playing');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
+        });
+
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+        let w, h;
+
+        function resizeCanvas() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0) this.x = w;
+                if (this.x > w) this.x = 0;
+                if (this.y < 0) this.y = h;
+                if (this.y > h) this.y = 0;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            const particleCount = Math.floor((w * h) / 20000);
+            for (let i = 0; i < particleCount; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, w, h);
+            particlesArray.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+    </script>
+</body>
+</html>
