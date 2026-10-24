@@ -27,7 +27,12 @@
                     animation: {
                         'shimmer': 'shimmer 5s ease-in-out infinite',
                         'hero-shimmer': 'heroShimmer 6s linear infinite',
-                        'breathing-bg': 'breathing 10s ease-in-out infinite',
+                        'breathing': 'breathing 10s ease-in-out infinite',
+                        'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+                        'equalizer': 'equalizer 0.8s ease-in-out infinite alternate',
+                        'marquee': 'marquee 25s linear infinite',
+                        'radar-sweep': 'radarSweep 4s linear infinite',
+                        'soundbar': 'soundbar 1.2s ease-in-out infinite alternate',
                     },
                     keyframes: {
                         shimmer: {
@@ -40,8 +45,28 @@
                             '100%': { backgroundPosition: '0% 50%' },
                         },
                         breathing: {
-                            '0%, 100%': { transform: 'scale(1)', opacity: '0.85' },
-                            '50%': { transform: 'scale(1.06)', opacity: '1' },
+                            '0%, 100%': { transform: 'scale(1)', opacity: '0.65' },
+                            '50%': { transform: 'scale(1.08)', opacity: '0.85' },
+                        },
+                        glowPulse: {
+                            '0%, 100%': { filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.2))' },
+                            '50%': { filter: 'drop-shadow(0 0 35px rgba(255,255,255,0.6))' },
+                        },
+                        equalizer: {
+                            '0%': { height: '15%' },
+                            '100%': { height: '100%' }
+                        },
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-50%)' }
+                        },
+                        radarSweep: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' }
+                        },
+                        soundbar: {
+                            '0%': { transform: 'scaleY(0.2)' },
+                            '100%': { transform: 'scaleY(1)' }
                         }
                     }
                 }
@@ -71,7 +96,7 @@
             color: transparent;
             -webkit-background-clip: text;
             background-clip: text;
-            animation: heroShimmer 6s ease-in-out infinite;
+            animation: heroShimmer 6s ease-in-out infinite, glowPulse 4s ease-in-out infinite;
         }
 
         .text-shimmer {
@@ -150,6 +175,58 @@
             background: rgba(255, 255, 255, 0.09);
             border-color: rgba(255, 255, 255, 0.3);
         }
+
+        /* Animated Glowing Border Feature */
+        .glow-border-card {
+            position: relative;
+            background: rgba(17, 17, 22, 0.85);
+            border-radius: 1.5rem;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .glow-border-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent 30%
+            );
+            animation: radarSweep 6s linear infinite;
+            z-index: -1;
+        }
+
+        .glow-border-card::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            background: rgba(17, 17, 22, 0.92);
+            border-radius: 1.4rem;
+            z-index: -1;
+        }
+
+        /* Interactive Soundwave Bars */
+        .wave-bar {
+            width: 4px;
+            background: linear-gradient(to top, rgba(255,255,255,0.2), #FFFFFF);
+            border-radius: 2px;
+            transform-origin: bottom;
+        }
+
+        /* Equalizer Animation Bars */
+        .eq-bar {
+            width: 3px;
+            background-color: #ffffff;
+            border-radius: 2px;
+        }
+        .playing .eq-bar:nth-child(1) { animation: equalizer 0.6s infinite alternate; }
+        .playing .eq-bar:nth-child(2) { animation: equalizer 0.8s infinite alternate 0.2s; }
+        .playing .eq-bar:nth-child(3) { animation: equalizer 0.5s infinite alternate 0.4s; }
     </style>
 </head>
 <body class="antialiased selection:bg-white selection:text-black">
@@ -177,9 +254,9 @@
         <!-- 1. HERO SECTION WITH photo1.jpg -->
         <section id="hero" style="position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 8rem; padding-left: 1rem; padding-right: 1rem; overflow: hidden; background-color: #070709;">
             
-            <!-- Background Image via IMG tag -->
+            <!-- Background Image with Breathing and Parallax Effect -->
             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden;">
-                <img src="photo1.jpg" alt="VASILIEV" style="width: 100%; height: 100%; object-fit: cover; object-position: center; position: absolute; top: 0; left: 0; opacity: 0.65;">
+                <img id="hero-bg" src="photo1.jpg" alt="VASILIEV" class="animate-breathing" style="width: 100%; height: 100%; object-fit: cover; object-position: center; position: absolute; top: 0; left: 0; transition: transform 0.1s ease-out;">
                 <!-- Gradient Overlay -->
                 <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(7,7,9,0.8), rgba(7,7,9,0.4), #070709); z-index: 1;"></div>
             </div>
@@ -189,7 +266,7 @@
                 <p class="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-zinc-400 mb-3 font-semibold">
                     Официальный сайт
                 </p>
-                <h1 class="brand-shimmer text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter uppercase mb-4 drop-shadow-2xl">
+                <h1 class="brand-shimmer text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter uppercase mb-4">
                     VASILIEV
                 </h1>
                 
@@ -210,9 +287,66 @@
             </a>
         </section>
 
-        <!-- 2. ABOUT ME SECTION -->
-        <section id="about" class="py-20 px-6 max-w-4xl mx-auto text-center relative z-10">
-            <div class="reveal-item glass-panel p-8 sm:p-14 rounded-3xl relative overflow-hidden shadow-2xl">
+        <!-- ⚡ NEW ANIMATION FEATURE 1: INFINITE MARQUEE TICKER (Прямо под главным экраном) -->
+        <div class="w-full bg-white/5 border-y border-white/10 py-3 overflow-hidden relative z-20 backdrop-blur-md">
+            <div class="flex whitespace-nowrap animate-marquee">
+                <div class="flex items-center space-x-8 text-xs font-bold tracking-widest uppercase text-zinc-300 pr-8">
+                    <span>⚡ VASILIEV</span>
+                    <span class="text-zinc-600">•</span>
+                    <span>НОВЫЙ РЕЛИЗ «ЗАЧЕМ?»</span>
+                    <span class="text-zinc-600">•</span>
+                    <span>АЛЬБОМ В СЕТИ</span>
+                    <span class="text-zinc-600">•</span>
+                    <span>OFFICIAL WEBSITE</span>
+                    <span class="text-zinc-600">•</span>
+                    <span>СЛУШАЙ НА ВСЕХ ПЛАТФОРМАХ</span>
+                    <span class="text-zinc-600">•</span>
+                </div>
+                <div class="flex items-center space-x-8 text-xs font-bold tracking-widest uppercase text-zinc-300 pr-8">
+                    <span>⚡ VASILIEV</span>
+                    <span class="text-zinc-600">•</span>
+                    <span>НОВЫЙ РЕЛИЗ «ЗАЧЕМ?»</span>
+                    <span class="text-zinc-600">•</span>
+                    <span>АЛЬБОМ В СЕТИ</span>
+                    <span class="text-zinc-600">•</span>
+                    <span>OFFICIAL WEBSITE</span>
+                    <span class="text-zinc-600">•</span>
+                    <span>СЛУШАЙ НА ВСЕХ ПЛАТФОРМАХ</span>
+                    <span class="text-zinc-600">•</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ⚡ NEW ANIMATION FEATURE 2 & 3: LIVE STATUS BADGE + INTERACTIVE SOUNDWAVE SECTION -->
+        <section class="py-10 px-6 max-w-4xl mx-auto relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                
+                <!-- Live Status Badge (Анимированный импульс) -->
+                <div class="reveal-item flex items-center space-x-3 bg-zinc-900/80 border border-white/10 px-5 py-3 rounded-full backdrop-blur-lg">
+                    <span class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-xs font-semibold tracking-wider text-zinc-300 uppercase">Слушают прямо сейчас: <strong class="text-white font-mono">1,482</strong></span>
+                </div>
+
+                <!-- Interactive Soundwave Pulse Visualizer (Интерактивная волна при клике) -->
+                <div class="reveal-item flex items-center space-x-1.5 h-10 px-6 py-2 bg-white/5 rounded-2xl border border-white/10 cursor-pointer group hover:border-white/30 transition-all" onclick="pulseWaveAnimation()">
+                    <span class="text-[10px] text-zinc-400 font-mono tracking-widest uppercase mr-2 group-hover:text-white transition-colors">Звуковой ритм</span>
+                    <div class="wave-bar h-full animate-soundbar" style="animation-delay: 0.1s;"></div>
+                    <div class="wave-bar h-full animate-soundbar" style="animation-delay: 0.4s;"></div>
+                    <div class="wave-bar h-full animate-soundbar" style="animation-delay: 0.2s;"></div>
+                    <div class="wave-bar h-full animate-soundbar" style="animation-delay: 0.6s;"></div>
+                    <div class="wave-bar h-full animate-soundbar" style="animation-delay: 0.3s;"></div>
+                    <div class="wave-bar h-full animate-soundbar" style="animation-delay: 0.5s;"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 2. ABOUT ME SECTION (Обновлена анимированной световой рамкой Glow-Border) -->
+        <section id="about" class="py-10 px-6 max-w-4xl mx-auto text-center relative z-10">
+            <div class="reveal-item glow-border-card p-8 sm:p-14 shadow-2xl">
                 <h2 class="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-semibold mb-6">
                     Концепция & Эстетика
                 </h2>
@@ -237,8 +371,13 @@
                 <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
                     <div class="flex items-center space-x-4 min-w-0">
                         <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
-                            <i class="fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
                             <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
+                            <div class="eq-container hidden items-end space-x-1 h-5 w-5 justify-center">
+                                <div class="eq-bar"></div>
+                                <div class="eq-bar"></div>
+                                <div class="eq-bar"></div>
+                            </div>
                         </div>
                         <div class="min-w-0">
                             <div class="flex items-center space-x-2">
@@ -254,8 +393,13 @@
                 <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
                     <div class="flex items-center space-x-4 min-w-0">
                         <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
-                            <i class="fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
                             <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
+                            <div class="eq-container hidden items-end space-x-1 h-5 w-5 justify-center">
+                                <div class="eq-bar"></div>
+                                <div class="eq-bar"></div>
+                                <div class="eq-bar"></div>
+                            </div>
                         </div>
                         <div class="min-w-0">
                             <div class="flex items-center space-x-2">
@@ -271,8 +415,13 @@
                 <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
                     <div class="flex items-center space-x-4 min-w-0">
                         <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
-                            <i class="fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
                             <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
+                            <div class="eq-container hidden items-end space-x-1 h-5 w-5 justify-center">
+                                <div class="eq-bar"></div>
+                                <div class="eq-bar"></div>
+                                <div class="eq-bar"></div>
+                            </div>
                         </div>
                         <div class="min-w-0">
                             <h3 class="text-base sm:text-lg font-bold text-white truncate">я сильный</h3>
@@ -285,8 +434,13 @@
                 <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
                     <div class="flex items-center space-x-4 min-w-0">
                         <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
-                            <i class="fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
                             <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
+                            <div class="eq-container hidden items-end space-x-1 h-5 w-5 justify-center">
+                                <div class="eq-bar"></div>
+                                <div class="eq-bar"></div>
+                                <div class="eq-bar"></div>
+                            </div>
                         </div>
                         <div class="min-w-0">
                             <div class="flex items-center space-x-2">
@@ -302,8 +456,13 @@
                 <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
                     <div class="flex items-center space-x-4 min-w-0">
                         <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
-                            <i class="fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
                             <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
+                            <div class="eq-container hidden items-end space-x-1 h-5 w-5 justify-center">
+                                <div class="eq-bar"></div>
+                                <div class="eq-bar"></div>
+                                <div class="eq-bar"></div>
+                            </div>
                         </div>
                         <div class="min-w-0">
                             <div class="flex items-center space-x-2">
@@ -319,8 +478,13 @@
                 <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
                     <div class="flex items-center space-x-4 min-w-0">
                         <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
-                            <i class="fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
                             <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
+                            <div class="eq-container hidden items-end space-x-1 h-5 w-5 justify-center">
+                                <div class="eq-bar"></div>
+                                <div class="eq-bar"></div>
+                                <div class="eq-bar"></div>
+                            </div>
                         </div>
                         <div class="min-w-0">
                             <div class="flex items-center space-x-2">
@@ -401,10 +565,38 @@
         function togglePlayTrack(element) {
             const allTracks = document.querySelectorAll('.track-card');
             const isPlaying = element.classList.contains('playing');
-            allTracks.forEach(card => card.classList.remove('playing'));
+            
+            allTracks.forEach(card => {
+                card.classList.remove('playing');
+                const defaultIcon = card.querySelector('.default-icon');
+                const playIcon = card.querySelector('.play-icon');
+                const eq = card.querySelector('.eq-container');
+                if (defaultIcon) defaultIcon.classList.remove('hidden');
+                if (playIcon) playIcon.classList.add('hidden');
+                if (eq) eq.classList.add('hidden');
+                if (eq) eq.classList.remove('flex');
+            });
+
             if (!isPlaying) {
                 element.classList.add('playing');
+                const defaultIcon = element.querySelector('.default-icon');
+                const playIcon = element.querySelector('.play-icon');
+                const eq = element.querySelector('.eq-container');
+                if (defaultIcon) defaultIcon.classList.add('hidden');
+                if (playIcon) playIcon.classList.add('hidden');
+                if (eq) eq.classList.remove('hidden');
+                if (eq) eq.classList.add('flex');
             }
+        }
+
+        function pulseWaveAnimation() {
+            const waveBars = document.querySelectorAll('.wave-bar');
+            waveBars.forEach(bar => {
+                bar.style.transform = `scaleY(${Math.random() * 0.9 + 0.1})`;
+            });
+            setTimeout(() => {
+                waveBars.forEach(bar => bar.style.transform = '');
+            }, 600);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -418,6 +610,16 @@
             document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
         });
 
+        // Parallax Effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const heroBg = document.getElementById('hero-bg');
+            if (heroBg && scrolled < window.innerHeight) {
+                heroBg.style.transform = `translateY(${scrolled * 0.35}px) scale(${1 + scrolled * 0.0003})`;
+            }
+        });
+
+        // Particle System
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particlesArray = [];
