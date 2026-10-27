@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -228,6 +228,85 @@
         .playing .eq-bar:nth-child(2) { animation: equalizer 0.8s infinite alternate 0.2s; }
         .playing .eq-bar:nth-child(3) { animation: equalizer 0.5s infinite alternate 0.4s; }
     </style>
+<style>
+    /* Фиксируем размер контейнера с иконкой, чтобы он не сжимался и не прыгал */
+    .track-card .flex-shrink-0 {
+        width: 48px !important;      /* Жесткая ширина (как было) */
+        height: 48px !important;     /* Жесткая высота */
+        min-width: 48px !important;  /* Запрещаем сжиматься меньше */
+        min-height: 48px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-right: 1rem !important; /* Фиксируем отступ справа */
+    }
+
+    /* Убираем возможные сдвиги у самих иконок */
+    .track-card .flex-shrink-0 i {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+</style>
+<style>
+    /* Делаем контейнер для иконок строго фиксированным */
+    .track-card .relative.w-12, 
+    .track-card .relative.w-14 {
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: relative !important;
+    }
+
+    /* Все иконки внутри квадратика абсолютно позиционируем по центру */
+    .track-card .relative.w-12 i, 
+    .track-card .relative.w-12 div,
+    .track-card .relative.w-14 i, 
+    .track-card .relative.w-14 div {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Эквалайзер тоже по центру */
+    .track-card .eq-container {
+        display: flex !important;
+        align-items: flex-end !important;
+        justify-content: center !important;
+        height: 20px !important;
+        width: 20px !important;
+    }
+</style>
+<style>
+    /* Обложки в плеере */
+    .track-card .relative.w-12,
+    .track-card .relative.w-14 {
+        overflow: hidden; /* Обрезаем края картинки */
+    }
+    
+    /* Иконки Play/Pause должны быть поверх картинки */
+    .track-card .play-icon,
+    .track-card .eq-container {
+        z-index: 10 !important; /* Поднимаем выше картинки */
+    }
+    
+    /* Полупрозрачный фон для эквалайзера, чтобы его было видно на фото */
+    .track-card .eq-container {
+        background: rgba(0, 0, 0, 0.6) !important;
+        width: 100% !important;
+        height: 100% !important;
+        position: absolute !important;
+        inset: 0 !important;
+        border-radius: 12px !important;
+    }
+</style>
 </head>
 <body class="antialiased selection:bg-white selection:text-black">
 
@@ -256,7 +335,7 @@
             
             <!-- Background Image with Breathing and Parallax Effect -->
             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden;">
-                <img id="hero-bg" src="photo1.jpg" alt="VASILIEV" class="animate-breathing" style="width: 100%; height: 100%; object-fit: cover; object-position: center; position: absolute; top: 0; left: 0; transition: transform 0.1s ease-out;">
+                <img id="hero-bg" src="photo1.jpg" alt="VASILIEV" class="animate-breathing" style="width: 100%; height: 100%; object-fit: cover; object-position: center 35%; position: absolute; top: 0; left: 0; filter: contrast(1.05) saturate(0.9) brightness(0.85); transition: transform 0.1s ease-out;">
                 <!-- Gradient Overlay -->
                 <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(7,7,9,0.8), rgba(7,7,9,0.4), #070709); z-index: 1;"></div>
             </div>
@@ -354,9 +433,7 @@
                     VASILIEV — новый голос в музыке. Сочетание строгой эстетики и искреннего звучания.
                 </p>
                 <div class="w-16 h-[1px] bg-gradient-to-r from-transparent via-zinc-500 to-transparent mx-auto my-8"></div>
-                <p class="text-sm sm:text-base text-zinc-400 font-light max-w-2xl mx-auto leading-relaxed">
-                    Музыка на стыке атмосферного синт-звука, глубинного баса и строгого визуального минимализма.
-                </p>
+                
             </div>
         </section>
 
@@ -371,7 +448,8 @@
                 <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
                     <div class="flex items-center space-x-4 min-w-0">
                         <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
-                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <img src="cover1.jpg" alt="Cover" class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden hidden"></i>
                             <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
                             <div class="eq-container hidden items-end space-x-1 h-5 w-5 justify-center">
                                 <div class="eq-bar"></div>
@@ -393,7 +471,8 @@
                 <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
                     <div class="flex items-center space-x-4 min-w-0">
                         <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
-                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <img src="album-cover.jpg" alt="Cover" class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden hidden"></i>
                             <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
                             <div class="eq-container hidden items-end space-x-1 h-5 w-5 justify-center">
                                 <div class="eq-bar"></div>
@@ -415,7 +494,8 @@
                 <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
                     <div class="flex items-center space-x-4 min-w-0">
                         <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
-                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <img src="album-cover.jpg" alt="Cover" class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden hidden"></i>
                             <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
                             <div class="eq-container hidden items-end space-x-1 h-5 w-5 justify-center">
                                 <div class="eq-bar"></div>
@@ -434,7 +514,8 @@
                 <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
                     <div class="flex items-center space-x-4 min-w-0">
                         <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
-                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <img src="album-cover.jpg" alt="Cover" class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden hidden"></i>
                             <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
                             <div class="eq-container hidden items-end space-x-1 h-5 w-5 justify-center">
                                 <div class="eq-bar"></div>
@@ -456,7 +537,8 @@
                 <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
                     <div class="flex items-center space-x-4 min-w-0">
                         <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
-                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <img src="cover2.jpg" alt="Cover" class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden hidden"></i>
                             <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
                             <div class="eq-container hidden items-end space-x-1 h-5 w-5 justify-center">
                                 <div class="eq-bar"></div>
@@ -478,7 +560,8 @@
                 <div class="track-card p-4 rounded-2xl flex items-center justify-between cursor-pointer group" onclick="togglePlayTrack(this)">
                     <div class="flex items-center space-x-4 min-w-0">
                         <div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-white/10 flex items-center justify-center">
-                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden"></i>
+                            <img src="album-cover.jpg" alt="Cover" class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <i class="default-icon fa-solid fa-music text-zinc-500 group-hover:hidden hidden"></i>
                             <i class="play-icon fa-solid fa-play text-white hidden group-hover:block text-sm"></i>
                             <div class="eq-container hidden items-end space-x-1 h-5 w-5 justify-center">
                                 <div class="eq-bar"></div>
@@ -507,14 +590,16 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="reveal-item group relative rounded-2xl overflow-hidden glass-panel aspect-[4/3] p-6 flex flex-col justify-end">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-zinc-900 to-black opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                    <img src="photo2.jpg" alt="Роза & Эстетика" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
                     <div class="relative z-10">
                         <span class="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">Концепт</span>
                         <h3 class="text-xl font-bold text-white mt-1">«Роза & Эстетика»</h3>
                     </div>
                 </div>
                 <div class="reveal-item group relative rounded-2xl overflow-hidden glass-panel aspect-[4/3] p-6 flex flex-col justify-end">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-zinc-900 to-black opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                    <img src="photo3.jpg" alt="Строгий стиль" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
                     <div class="relative z-10">
                         <span class="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">Обложка</span>
                         <h3 class="text-xl font-bold text-white mt-1">«Строгий стиль»</h3>
@@ -562,31 +647,59 @@
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        function togglePlayTrack(element) {
+                        function togglePlayTrack(element) {
+            const audio = document.getElementById('audioPlayer');
             const allTracks = document.querySelectorAll('.track-card');
+            
+            const trackIndex = Array.from(allTracks).indexOf(element) + 1;
+            const trackSrc = 'track' + trackIndex + '.mp3';
+
             const isPlaying = element.classList.contains('playing');
             
+            // Сбрасываем все треки
             allTracks.forEach(card => {
                 card.classList.remove('playing');
                 const defaultIcon = card.querySelector('.default-icon');
                 const playIcon = card.querySelector('.play-icon');
                 const eq = card.querySelector('.eq-container');
+                
+                // Возвращаем иконку "музыка" и прячем "паузу"
                 if (defaultIcon) defaultIcon.classList.remove('hidden');
-                if (playIcon) playIcon.classList.add('hidden');
+                if (playIcon) {
+                    playIcon.classList.add('hidden');
+                    playIcon.classList.remove('fa-pause'); // Убираем паузу
+                    playIcon.classList.add('fa-play');    // Возвращаем плей
+                }
                 if (eq) eq.classList.add('hidden');
                 if (eq) eq.classList.remove('flex');
             });
 
-            if (!isPlaying) {
+            // Если нажали на играющий трек — ставим на паузу
+            if (isPlaying) {
+                audio.pause();
+                return;
+            }
+
+            // Включаем новый трек
+            audio.src = trackSrc;
+            audio.play().then(() => {
                 element.classList.add('playing');
                 const defaultIcon = element.querySelector('.default-icon');
                 const playIcon = element.querySelector('.play-icon');
                 const eq = element.querySelector('.eq-container');
+                
+                // Прячем иконку "музыка" и показываем "паузу"
                 if (defaultIcon) defaultIcon.classList.add('hidden');
-                if (playIcon) playIcon.classList.add('hidden');
+                if (playIcon) {
+                    playIcon.classList.remove('hidden');
+                    playIcon.classList.remove('fa-play');
+                    playIcon.classList.add('fa-pause'); // Меняем на паузу
+                }
                 if (eq) eq.classList.remove('hidden');
                 if (eq) eq.classList.add('flex');
-            }
+            }).catch(error => {
+                console.error('Ошибка воспроизведения. Убедитесь, что файл ' + trackSrc + ' лежит в папке с сайтом.', error);
+            });
         }
 
         function pulseWaveAnimation() {
@@ -678,5 +791,24 @@
         initParticles();
         animateParticles();
     </script>
+    <audio id="audioPlayer"></audio>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
