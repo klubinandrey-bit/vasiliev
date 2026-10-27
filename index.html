@@ -309,6 +309,11 @@
 </style>
 </head>
 <body class="antialiased selection:bg-white selection:text-black">
+    <div id="aurora-cursor" style="position: fixed; top: 0; left: 0; width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: opacity 0.3s ease; opacity: 0;"></div>`n    <div id="scroll-progress" class="fixed top-0 left-0 h-[2px] z-[100] transition-all duration-75" style="width: 0%; background: linear-gradient(to right, #a1a1aa, #ffffff); box-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4);"></div>
+    
+    <!-- Полоса прогресса прокрутки (Неон) -->
+    
+
 
     <!-- Canvas Animated Background Particles -->
     <canvas id="bg-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 opacity-30"></canvas>
@@ -609,27 +614,30 @@
         </section>
 
         <!-- 5. SOCIAL MEDIA BUTTONS -->
+        
+
+        <!-- Интерактивная нотка -->
         <section id="socials" class="py-20 px-6 max-w-2xl mx-auto text-center relative z-10">
             <div class="reveal-item mb-10">
                 <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">Социальные сети</h2>
                 <p class="text-zinc-400 text-xs">Следите за обновлениями</p>
             </div>
             <div class="flex flex-col space-y-4 reveal-item">
-                <a href="https://t.me/the_vasiliev" target="_blank" rel="noopener noreferrer" class="glass-button-social w-full py-4 px-6 rounded-2xl flex items-center justify-between text-base font-semibold tracking-wide text-white group">
+                <a href="#" target="_blank" rel="noopener noreferrer" class="glass-button-social w-full py-4 px-6 rounded-2xl flex items-center justify-between text-base font-semibold tracking-wide text-white group">
                     <div class="flex items-center space-x-3">
                         <i class="fa-brands fa-telegram text-xl"></i>
                         <span>Telegram</span>
                     </div>
                     <i class="fa-solid fa-arrow-right text-xs opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
                 </a>
-                <a href="https://vk.ru/vasiliev_18plus" target="_blank" rel="noopener noreferrer" class="glass-button-social w-full py-4 px-6 rounded-2xl flex items-center justify-between text-base font-semibold tracking-wide text-white group">
+                <a href="#" target="_blank" rel="noopener noreferrer" class="glass-button-social w-full py-4 px-6 rounded-2xl flex items-center justify-between text-base font-semibold tracking-wide text-white group">
                     <div class="flex items-center space-x-3">
                         <i class="fa-brands fa-vk text-xl"></i>
                         <span>VKontakte</span>
                     </div>
                     <i class="fa-solid fa-arrow-right text-xs opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
                 </a>
-                <a href="https://www.tiktok.com/@vasiliev_18plus?_r=1&_t=ZT-9ApeUDax7qI" target="_blank" rel="noopener noreferrer" class="glass-button-social w-full py-4 px-6 rounded-2xl flex items-center justify-between text-base font-semibold tracking-wide text-white group">
+                <a href="#" target="_blank" rel="noopener noreferrer" class="glass-button-social w-full py-4 px-6 rounded-2xl flex items-center justify-between text-base font-semibold tracking-wide text-white group">
                     <div class="flex items-center space-x-3">
                         <i class="fa-brands fa-tiktok text-xl"></i>
                         <span>TikTok</span>
@@ -638,11 +646,19 @@
                 </a>
             </div>
         </section>
+
+        <!-- Интерактивная нотка -->
+        <div style="text-align: center; margin-top: 1rem; margin-bottom: 2rem;">
+            <div id="music-note-trigger" style="display: inline-block; cursor: pointer; font-size: 3rem; color: white; opacity: 0.6; transition: all 0.3s ease; user-select: none; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));">
+                ♪
+            </div>
+        </div>
     </main>
 
     <footer class="relative z-10 border-t border-white/5 py-6 text-center text-xs text-zinc-600">
         <p>© <span id="year"></span> VASILIEV. Все права защищены.</p>
-    </footer>
+    
+</footer>
 
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
@@ -792,8 +808,134 @@
         animateParticles();
     </script>
     <audio id="audioPlayer"></audio>
+    <!-- Скрипт полосы прогресса -->
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            const progressBar = document.getElementById('scroll-progress');
+            if (progressBar) progressBar.style.width = scrolled + '%';
+        });
+    </script>
+    <!-- Скрипт 1: Свечение за курсором (Aurora) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const aurora = document.getElementById('aurora-cursor');
+            if (!aurora) return;
+
+            document.addEventListener('mousemove', (e) => {
+                aurora.style.opacity = '1';
+                aurora.style.left = e.clientX + 'px';
+                aurora.style.top = e.clientY + 'px';
+            });
+
+            document.addEventListener('mouseleave', () => {
+                aurora.style.opacity = '0';
+            });
+        });
+    </script>
+
+    <!-- Скрипт 2: Матричный эффект на тексте (Scramble Text) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+            const targets = document.querySelectorAll('h1, h3');
+            
+            targets.forEach(target => {
+                let originalText = target.innerText;
+                
+                target.addEventListener('mouseover', event => {
+                    let iterations = 0;
+                    const interval = setInterval(() => {
+                        event.target.innerText = event.target.innerText.split("")
+                            .map((letter, index) => {
+                                if(index < iterations) {
+                                    return originalText[index];
+                                }
+                                return letters[Math.floor(Math.random() * letters.length)];
+                            })
+                            .join("");
+                        
+                        if(iterations >= originalText.length) {
+                            clearInterval(interval);
+                            event.target.innerText = originalText;
+                        }
+                        iterations += 1 / 3;
+                    }, 30);
+                });
+            });
+        });
+    </script>
+
+    <!-- Скрипт для вылетающих ноток -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var trigger = document.getElementById('music-note-trigger');
+            if (!trigger) return;
+
+            trigger.addEventListener('mouseenter', function() {
+                trigger.style.opacity = '1';
+                trigger.style.transform = 'scale(1.2) rotate(15deg)';
+            });
+            
+            trigger.addEventListener('mouseleave', function() {
+                trigger.style.opacity = '0.6';
+                trigger.style.transform = 'scale(1) rotate(0deg)';
+            });
+
+            trigger.addEventListener('click', function(e) {
+                var rect = trigger.getBoundingClientRect();
+                var startX = rect.left + rect.width / 2;
+                var startY = rect.top + rect.height / 2;
+
+                for (var i = 0; i < 12; i++) {
+                    createNote(startX, startY);
+                }
+            });
+
+            function createNote(x, y) {
+                var note = document.createElement('div');
+                note.innerText = '♪';
+                note.style.position = 'fixed';
+                note.style.left = x + 'px';
+                note.style.top = y + 'px';
+                note.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                note.style.color = 'rgba(255, 255, 255, ' + (Math.random() * 0.5 + 0.5) + ')';
+                note.style.pointerEvents = 'none';
+                note.style.zIndex = '9999';
+                note.style.textShadow = '0 0 10px rgba(255,255,255,0.8)';
+                document.body.appendChild(note);
+
+                var angle = Math.random() * Math.PI * 2;
+                var velocity = Math.random() * 150 + 100;
+                var tx = Math.cos(angle) * velocity;
+                var ty = Math.sin(angle) * velocity;
+                var rotate = Math.random() * 360;
+
+                var animation = note.animate([
+                    { transform: 'translate(0px, 0px) scale(1) rotate(0deg)', opacity: 1 },
+                    { transform: 'translate(' + tx + 'px, ' + ty + 'px) scale(0.5) rotate(' + rotate + 'deg)', opacity: 0 }
+                ], {
+                    duration: 800 + Math.random() * 400,
+                    easing: 'cubic-bezier(0, .9, .57, 1)'
+                });
+
+                animation.onfinish = function() {
+                    note.remove();
+                };
+            }
+        });
+    </script>
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 
